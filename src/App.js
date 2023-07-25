@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+export default function App() {
+  const [advice, setAdvice] = useState("");
+  const [adviceCount, setAdviceCount] = useState(0);
+  const [previousAdvice, setPreviousAdvice] = useState("");
+  async function getAdivce() {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json()
+    const newAdvice = data.slip.advice;
+    if (newAdvice !== previousAdvice) {
+      setAdvice(newAdvice);
+      setPreviousAdvice(newAdvice);
+      setAdviceCount((currentCount) => currentCount + 1);
+    } else {
+      getAdivce();
+    }
 
-function App() {
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>{advice}</h1>
+      <button onClick={getAdivce}>Get advice</button>
+      <p>You have read {adviceCount} pieces of advice.</p>
     </div>
   );
 }
-
-export default App;
